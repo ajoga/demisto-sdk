@@ -850,6 +850,7 @@ class TestCommandGeneration:
             ({"name": "some_input_arg"}, {"name": "some_input_arg"}),
             ({"description": "some desc"}, {"description": "some desc"}),
             ({"required": True}, {"required": True}),
+            ({"required": False}, {"required": False}),
             (
                 {"default": True},
                 {"default": True, "defaultValue": True, "required": False},
@@ -862,7 +863,8 @@ class TestCommandGeneration:
         ids=[
             "name",
             "description",
-            "required",
+            "required_true",
+            "required_false",
             "default",
             "is_array",
             "secret",
