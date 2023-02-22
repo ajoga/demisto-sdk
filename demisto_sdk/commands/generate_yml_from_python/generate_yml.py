@@ -313,7 +313,6 @@ class MetadataToDict:
             "display": config_key.display,
             "name": config_key.name,
             "type": config_key.key_type,
-            "required": config_key.required,
         }
         if config_key.default_value:
             config_key_metadata["defaultvalue"] = config_key.default_value
@@ -323,6 +322,9 @@ class MetadataToDict:
 
         if config_key.options:
             config_key_metadata["options"] = config_key.options
+
+        if type(config_key.required) is bool:
+            config_key_metadata["required"] = config_key.required
 
         if config_key.input_type:
             config_key_metadata["options"] = MetadataToDict.handle_enum(
@@ -437,7 +439,7 @@ class MetadataToDict:
                 options = []
                 secret = False
                 execution = False
-                required = False
+                required = None
                 if (
                     arg_type
                     and inspect.isclass(arg_type)
@@ -501,24 +503,22 @@ class MetadataToDict:
         secret: bool = False,
         options: list = [],
         execution: bool = False,
-        required: bool = False,
+        required: bool = None,
     ) -> dict:
         """Return a YML metadata dict of a command argument."""
         arg_metadata = {
             "name": arg_name,
             "isArray": False,
             "description": arg_name,
-            "required": required,
             "secret": False,
             "default": True if default_value else False,
         }
         if description:
             arg_metadata["description"] = description
         if default_value:
-            arg_metadata["required"] = False
             arg_metadata["defaultValue"] = default_value
-        else:
-            arg_metadata["required"] = True
+        if type(required) is bool:
+            arg_metadata["required"] = required
         if is_array:
             arg_metadata["isArray"] = True
         if options:

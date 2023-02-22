@@ -100,12 +100,7 @@ EMPTY_INTEGRATION_DICT = {
     "tests": ["No tests"],
 }
 
-BASIC_CONF_KEY_DICT = {
-    "display": "some_name",
-    "name": "some_name",
-    "type": 0,
-    "required": False,
-}
+BASIC_CONF_KEY_DICT = {"display": "some_name", "name": "some_name", "type": 0}
 
 
 class TestImportDependencies:
@@ -470,7 +465,7 @@ class TestConfigurationGeneration:
             "key_type=AUTH",
             "key_type=DOWNLOAD_LINK",
             "key_type=TEXT_AREA",
-            "key_type=INCIDENT_TYPE",
+            "key_typeXINCIDENT_TYPE",
             "key_type=TEXT_AREA_ENCRYPTED",
             "key_type=SINGLE_SELECT",
             "key_type=MULTI_SELECT",
@@ -564,7 +559,6 @@ BASIC_IN_ARG_DICT = {
     "name": "some_arg",
     "description": "some_description",
     "isArray": False,
-    "required": True,
     "secret": False,
 }
 
@@ -853,7 +847,7 @@ class TestCommandGeneration:
             ({"required": False}, {"required": False}),
             (
                 {"default": True},
-                {"default": True, "defaultValue": True, "required": False},
+                {"default": True, "defaultValue": True},
             ),
             ({"is_array": True}, {"isArray": True}),
             ({"secret": True}, {"secret": True}),
@@ -942,7 +936,6 @@ class TestCommandGeneration:
                 {
                     "name": "some_input_arg",
                     "description": "some desc.",
-                    "required": False,
                     "defaultValue": "5",
                     "default": True,
                 },
@@ -1676,7 +1669,7 @@ class TestYMLGeneration:
         "category": "Utilities",
         "commonfields": {"id": "some_name", "version": -1},
         "configuration": [
-            {"display": "confkey1", "name": "confkey1", "type": 0, "required": False},
+            {"display": "confkey1", "name": "confkey1", "type": 0},
             {"display": "confkey2", "name": "confkey2", "type": 0, "required": False},
         ],
         "description": "",
@@ -1700,7 +1693,6 @@ class TestYMLGeneration:
                             "name": "classy_arg2",
                             "description": "some classy second arg.",
                             "isArray": False,
-                            "required": True,
                             "secret": False,
                         },
                     ],
@@ -1727,7 +1719,6 @@ class TestYMLGeneration:
                             "name": "some_in1",
                             "description": "in one desc",
                             "isArray": False,
-                            "required": True,
                             "secret": False,
                         },
                         {
@@ -1772,14 +1763,16 @@ class TestYMLGeneration:
     def full_integration_code_snippet(self):
         metadata_collector = YMLMetadataCollector(
             integration_name="some_name",
-            conf=[ConfKey(name="confkey1"), ConfKey(name="confkey2")],
+            conf=[ConfKey(name="confkey1"), ConfKey(name="confkey2", required=False)],
         )
 
         @metadata_collector.command(
             command_name="some-funky-command",
             inputs_list=[
                 InputArgument(name="some_in1", description="in one desc"),
-                InputArgument(name="some_in2", description="in two desc"),
+                InputArgument(
+                    name="some_in2", description="in two desc", required=True
+                ),
             ],
             outputs_list=[
                 OutputArgument(
@@ -1799,7 +1792,7 @@ class TestYMLGeneration:
             """Some classy description.
 
             Args:
-                classy_arg1: some classy first arg.
+                classy_arg1: some classy first arg. required.
                 classy_arg2: some classy second arg.
 
             Context Outputs:
